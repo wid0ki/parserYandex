@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>addFile.png</file>
+        <file>removeFile.png</file>
+        <file>settings.png</file>
+        <file>enter.png</file>
+        <file>logo.png</file>
+        <file>settings_pressed.png</file>
+        <file>clear.png</file>
+        <file>twitter.png</file>
+        <file>github.png</file>
+        <file>addFile_pressed.png</file>
+        <file>clear_pressed.png</file>
+        <file>removeFile_pressed.png</file>
+        <file>arrow_up.png</file>
+    </qresource>
+    <qresource prefix="/test">
+        <file>yandex.html</file>
+        <file>yandexImg.html</file>
+    </qresource>
+</RCC>

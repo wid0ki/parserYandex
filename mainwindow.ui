@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>629</width>
+    <height>318</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>parSex</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QPushButton" name="settingsButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>48</y>
+      <width>24</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>591</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>24</number>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="searchString">
+    <property name="geometry">
+     <rect>
+      <x>51</x>
+      <y>50</y>
+      <width>561</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="yandexBox">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>80</y>
+      <width>87</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>в Yandex</string>
+    </property>
+    <property name="tristate">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="historyBox">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>80</y>
+      <width>87</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>в Истории</string>
+    </property>
+    <property name="tristate">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="enterButton">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>50</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>591</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QFrame" name="settings">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>90</y>
+      <width>281</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <zorder>resultTable</zorder>
+   </widget>
+   <widget class="QTableWidget" name="resultTable">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>110</y>
+      <width>591</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="gridStyle">
+     <enum>Qt::NoPen</enum>
+    </property>
+   </widget>
+   <widget class="QListView" name="autoCompletion">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>70</y>
+      <width>251</width>
+      <height>71</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="settings_arrow">
+    <property name="geometry">
+     <rect>
+      <x>12</x>
+      <y>70</y>
+      <width>41</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <zorder>settings_arrow</zorder>
+   <zorder>settingsButton</zorder>
+   <zorder>progressBar</zorder>
+   <zorder>searchString</zorder>
+   <zorder>yandexBox</zorder>
+   <zorder>historyBox</zorder>
+   <zorder>enterButton</zorder>
+   <zorder>label</zorder>
+   <zorder>settings</zorder>
+   <zorder>resultTable</zorder>
+   <zorder>autoCompletion</zorder>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>629</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Парсер</string>
+    </property>
+    <addaction name="newWindow"/>
+    <addaction name="separator"/>
+    <addaction name="exit"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Настройки</string>
+    </property>
+    <addaction name="searching"/>
+    <addaction name="historing"/>
+    <addaction name="setting"/>
+    <addaction name="separator"/>
+    <addaction name="clear_searching"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>Сохраненное</string>
+    </property>
+    <addaction name="clear"/>
+    <addaction name="statistic"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>Справка</string>
+    </property>
+    <addaction name="help"/>
+    <addaction name="about"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_4"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="newWindow">
+   <property name="text">
+    <string>Новое окно</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="exit">
+   <property name="text">
+    <string>Закрыть</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="searching">
+   <property name="text">
+    <string>Режим поиска</string>
+   </property>
+  </action>
+  <action name="historing">
+   <property name="text">
+    <string>Режим истории</string>
+   </property>
+  </action>
+  <action name="setting">
+   <property name="text">
+    <string>Режим настройки</string>
+   </property>
+  </action>
+  <action name="clear_searching">
+   <property name="text">
+    <string>Очистить историю поиска</string>
+   </property>
+  </action>
+  <action name="clear">
+   <property name="text">
+    <string>Очистить</string>
+   </property>
+  </action>
+  <action name="statistic">
+   <property name="text">
+    <string>Показать сводку</string>
+   </property>
+  </action>
+  <action name="help">
+   <property name="text">
+    <string>Как пользоваться</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="about">
+   <property name="text">
+    <string>О нас</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
