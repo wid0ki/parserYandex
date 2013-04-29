@@ -1,0 +1,93 @@
+16/04
+получено задание. прочитано. решено отложить до окончания спринта.
+
+22/04 16:30
+создан первый макет интерфеса - paper prototype (фото 1).
+
+22/04 17:00
+создан макет гуя с помощью moqups.com (хотелось чего-то нового вместо бальзамик) (фото 2)
+
+22/04 17:30 
+проведено обсуждение макета со знакомыми и DuckFriend.
+
+22/04 18:05
+начата разработка. 
+Предпочтительный язык программирования — java.
+Почему С++ с Qt? Потому что я не могу выучить java за 4 часа. А Qt - модно, весело, молодежно кроссплатформенно.
+Парсер похож на одно из до этого написанных приложений recursiveG для обхода сайта, поиска ссылок и проверки их валидности. Будем использовать код повторно.
+
+22/04 19:09
+Думаю с парсером не будет проблем, отправили запрос и получили ответ. Подключили прогресс бар.
+
+19:10 получил ответ. !@#
+
+Начался #uxim
+
+использовала регулярочку, чтобы не выглядеть дурочкой
+
+В общем, говорится, сначала сделай так, чтобы оно работало:
+void MainWindow::getResponseElement(QString element)
+{
+    QString responde;
+    QString url;
+    QString title;
+    QString article;
+    QString greenLine;
+    int begin = element.indexOf("a class=\"b-serp-item__title-link\" href=\"") + QString("a class=\"b-serp-item__title-link\" href=\"").length();
+    while (element.at(begin)!='\"')
+    {
+        url.append(element.at(begin));
+        begin++;
+    }
+    begin = element.indexOf("<span>") + QString("<span>").length();
+    while (!title.contains("</span>"))
+    {
+        title.append(element.at(begin));
+        begin++;
+    }
+    title = title.replace("&quot;","\"").replace(QRegularExpression("(<(/?[^>]+)>)"),"");
+    begin = element.indexOf("<div class=\"b-serp-item__text\">") + QString("<div class=\"b-serp-item__text\">").length();
+    while (!article.contains("</div>"))
+    {
+        article.append(element.at(begin));
+        begin++;
+    }
+    article = article.replace("&quot;","\"").replace(QRegularExpression("(<(/?[^>]+)>)"),"");
+    begin = element.indexOf("<a class=\"b-serp-url__link");
+    while (!greenLine.contains("</span></span>"))
+    {
+            greenLine.append(element.at(begin));
+            begin++;
+    }
+    greenLine = greenLine.replace("&quot;","\"").replace(QRegularExpression("(<(/?[^>]+)>)"),"").replace(" ????? ???","");
+
+    qDebug()<<"meow "<<url<<" "<<title<<" "<<article<<" "<<greenLine;
+}
+
+Теперь надо это как-то нормализовать. Вот так:
+
+QString MainWindow::extractionParam(QString paramBeg, QString paramEnd, QString element)
+{
+    QString extract;
+    int begin = element.indexOf(paramBeg);
+    if (begin == -1) return "";
+    while (!extract.contains(paramEnd))
+    {
+        extract.append(element.at(begin));
+        begin++;
+    }
+    return extract.replace("&quot;","\"").replace(QRegularExpression("(<(/?[^>]+)>)"),"").replace(" ????? ???","");
+}
+
+
+Ненавижу себя за неумение использовать регулярки.
+
+Полуночный твит
+я честно не пойму, зачем результатам поиска в истории делать обложки как у альбомов в itunes, но почему-то сейчас это очень важно 
+
+
+
+Возникли проблемы. Написала тестовые страницы. В итоге все разрешилось (http://clubs.ya.ru/company/replies.xml?item_no=66095)
+
+
+

@@ -7,6 +7,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QPushButton>
 #include <QTableWidgetItem>
+#include "saver.h"
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +35,7 @@ private slots:
     void goDocument(int);
     void getAutoComplition(QString);
     void searchLocal();
+    void clearString();
     void cellHandle(int, int);
     void cellHandle(QTableWidgetItem*);
     
@@ -42,6 +44,7 @@ private:
     QList <QJsonObject> resultsYandex;
     QStringList latestSearches;
     QString path;
+    int onSave;
     void parseResults(QString);
     void outputResults();
     int resultCountYandex;

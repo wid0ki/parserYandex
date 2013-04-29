@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     author.cpp \
-    howtouse.cpp
+    howtouse.cpp \
+    saver.cpp
 
 HEADERS  += mainwindow.h \
     author.h \
-    howtouse.h
+    howtouse.h \
+    saver.h
 
 FORMS    += mainwindow.ui \
     author.ui \

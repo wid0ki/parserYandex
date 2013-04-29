@@ -10,14 +10,14 @@
 #include <QStandardItemModel>
 #include <QBoxLayout>
 #include <QFile>
+#include <QThreadPool>
+#include <QDir>
 
 //TODO: settings baloon
 // сохраненное, настройки, парсер, чек-боксы, сохранение в файлы
 // падение после повторного запроса
 // пофиксить парсер
 // сделать сохранение
-// разобраться с QTableWidget
-
 // автоматические категории
 // сохранять настройки, забирать их при повторном запуске
 
@@ -46,7 +46,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     settingsOpen = false;
-    path = "/Users/larasorokina/parSex/";
+    onSave = 0;
+    QDir home(QDir::homePath()+"/parserYandex/");
+    QDir homeSaved(QDir::homePath()+"/parserYandex/saved/");
+    if (!home.exists())
+        home.mkpath(QDir::homePath()+"/parserYandex/");
+    if (!homeSaved.exists())
+        home.mkpath(QDir::homePath()+"/parserYandex/saved");
+    path = QDir::homePath()+"/parserYandex/saved/";
     ui->setupUi(this);
     ui->settingsButton->setIcon(QIcon(":/icons/settings.png"));
     ui->settingsButton->setFixedSize(24,24);
@@ -103,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->newWindow, SIGNAL(triggered()), this, SLOT(newWindow()));
     connect(ui->searchString, SIGNAL(returnPressed()), this, SLOT(sendString()));
     connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(settingsButtonClicked()));
-    connect(ui->enterButton, SIGNAL(clicked()), this, SLOT(clearAll()));
+    connect(ui->enterButton, SIGNAL(clicked()), this, SLOT(clearString()));
     connect(ui->about, SIGNAL(triggered()), this, SLOT(showAuthor()));
     connect(ui->help, SIGNAL(triggered()), this, SLOT(showHowToUse()));
     connect(ui->searchString, SIGNAL(textEdited(QString)), this, SLOT(getAutoComplition(QString)));
@@ -142,10 +149,14 @@ void MainWindow::getAutoComplition(QString string)
         ui->autoCompletion->show();
 }
 
+void MainWindow::clearString()
+{
+    ui->searchString->clear();
+}
+
 void MainWindow::clearAll()
 {
     settingsOpen = false;
-    ui->searchString->clear();
     this->resize(QSize(630,166));
     resultCountYandex = 0;
     resultCountHistory = 0;
@@ -198,6 +209,7 @@ void MainWindow::settingsButtonClicked()
 
 void MainWindow::sendString()
 {
+    clearAll();
     QNetworkRequest request;
     resultCountYandex = 0;
     resultCountHistory = 0;
@@ -242,6 +254,7 @@ void MainWindow::searchFinished(QNetworkReply* reply)
     if (answer != "")
     {
         parseResults(answer);
+        qDebug()<<"finish parsing";
         outputResults();
     }
     else
@@ -250,17 +263,19 @@ void MainWindow::searchFinished(QNetworkReply* reply)
 
 void MainWindow::addDocument(int row)
 {
+    ui->label->hide();
+    ui->progressBar->show();
+    ui->progressBar->setMaximum(QThreadPool::globalInstance()->activeThreadCount());
     ui->statusBar->showMessage("Добавлено в очередь на сохранение", 500);
+
+    Saver *newSaving = new Saver(path,row/4,resultsYandex);
+    QThreadPool::globalInstance()->start(newSaving);
+    while (QThreadPool::globalInstance()->activeThreadCount() > 0)
+        ui->progressBar->setValue(QThreadPool::globalInstance()->activeThreadCount());
+    ui->progressBar->hide();
+    ui->label->setText("Мы сохранили эту шляпу");
+    ui->label->show();
     qDebug()<<"im in add "<<row/4;
-    QFile fileOut(path+"saved.txt");
-    QTextStream os(&fileOut);
-    if (!fileOut.open(QIODevice::WriteOnly)) {
-        return  QString(1000);
-    }
-    os.setCodec("UTF-8");
-    os<<"url: "<<resultsYandex.at(row/4).value("url").toString()<<"; title: "<<resultsYandex.at(row/4).value("title").toString()<<
-        "; article: "<<resultsYandex.at(row/4).value("article").toString()<<"; green_line: "<<resultsYandex.at(row/4).value("green_line").toString();
-    fileOut.close();
 }
 
 void MainWindow::goDocument(int row)
@@ -384,19 +399,21 @@ QString MainWindow::extractionParam(QString paramBeg, QString paramEnd, QString 
 {
     QString extract;
     int begin = element.indexOf(paramBeg);
-    if (begin == -1) return "";
-    while (!extract.contains(paramEnd))
+    int end = element.indexOf(paramEnd);
+    if (begin == -1 or end == -1) return "";
+    while (begin < end)
     {
         extract.append(element.at(begin));
         begin++;
     }
-    return extract.replace("&quot;","\"").replace("&nbsp;"," ").replace("&hellip;","").replace(QRegularExpression("(<(/?[^>]+)>)"),"").replace(" копия ещё","");
+    return extract.replace("&quot;","\"").replace("&nbsp;"," ").replace("&hellip;","").replace(QRegularExpression("(<(/?[^>]+)>)"),"").replace(" копия ещё","").replace("<a class=\"b-serp-item__title-link\" href=\"","");
 }
 
 void MainWindow::parseResults(QString answer)
 {
     QString * temp = new QString;
-    qDebug()<<answer;
+//    qDebug()<<answer;
+    qDebug()<<"start parsing";
     if (answer.contains("<strong class=\"b-head-logo__text\">Найдётся&nbsp;всё.<br/>Со временем&nbsp;</strong>"))
     {
         resultCountYandex = 0;
@@ -405,6 +422,7 @@ void MainWindow::parseResults(QString answer)
     {
         int begin = answer.indexOf("<strong class=\"b-head-logo__text\">") + QString("<strong class=\"b-head-logo__text\">").length();
         int end = answer.indexOf("</strong>");
+        qDebug()<<begin<<" "<<end;
         while (begin < end)
         {
             temp->append(answer.at(begin));
@@ -420,17 +438,22 @@ void MainWindow::parseResults(QString answer)
             begin = answer.indexOf("</li>") + QString("</li>").length();
             qDebug()<<begin;
         }
-
-        while (begin!= end)
+        qDebug()<<begin<<" "<<end;
+        while (begin < end)
         {
             temp->append(answer.at(begin));
             if (temp->contains("</li>") and temp->contains("li class=\"b-serp-item i-bem"))
             {
+                qDebug()<<"match";
                 QJsonObject el;
-                el.insert("url",extractionParam("a class=\"b-serp-item__title-link\" href=\"","\"",*temp));
+                el.insert("url",extractionParam("<a class=\"b-serp-item__title-link\" href=\"","onmousedown",*temp));
+                qDebug()<<"match";
                 el.insert("title",extractionParam("<span>","</span>",*temp));
-                el.insert("article",extractionParam("<div class=\"b-serp-item__text\">","<div class=\"b-serp-item__links\">",*temp));
+                qDebug()<<"match";
+                el.insert("article",extractionParam("<div class=\"b-serp-item__text\">","</div>",*temp));
+                qDebug()<<"match";
                 el.insert("green_line",extractionParam("<a class=\"b-serp-url__link","</span></span>",*temp));
+
                 resultsYandex.append(el);
                 temp->clear();
             }
