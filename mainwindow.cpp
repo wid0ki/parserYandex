@@ -115,7 +115,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->help, SIGNAL(triggered()), this, SLOT(showHowToUse()));
     connect(ui->searchString, SIGNAL(textEdited(QString)), this, SLOT(getAutoComplition(QString)));
 
-//    initTest();
+    initTest();
 }
 
 void MainWindow::showAuthor()
@@ -250,7 +250,6 @@ void MainWindow::searchFinished(QNetworkReply* reply)
     QString answer = "";
     while (reply->bytesAvailable())
         answer += reply->readAll();
-    qDebug()<<answer;
     if (answer != "")
     {
         parseResults(answer);
@@ -366,7 +365,6 @@ void MainWindow::outputResults()
         ui->resultTable->setCellWidget(i+2,1,greenLine);
 
         connect(ui->resultTable, SIGNAL(cellClicked(int,int)), this, SLOT(cellHandle(int,int)));
-        connect(ui->resultTable, SIGNAL(itemClicked(QTableWidgetItem*)), this, SLOT(cellHandle(QTableWidgetItem*)));
 
         sizeWindowHint();
     }
@@ -376,7 +374,6 @@ void MainWindow::outputResults()
 
 void MainWindow::cellHandle(int row, int column)
 {
-    qDebug()<<"imhere";
     if (column == 0) addDocument(row);
     else if (column == 1) goDocument(row);
     else qDebug()<<"Error in cellHandle(int,int) get bad value of column: "<<column;
@@ -444,14 +441,10 @@ void MainWindow::parseResults(QString answer)
             temp->append(answer.at(begin));
             if (temp->contains("</li>") and temp->contains("li class=\"b-serp-item i-bem"))
             {
-                qDebug()<<"match";
                 QJsonObject el;
                 el.insert("url",extractionParam("<a class=\"b-serp-item__title-link\" href=\"","onmousedown",*temp));
-                qDebug()<<"match";
                 el.insert("title",extractionParam("<span>","</span>",*temp));
-                qDebug()<<"match";
                 el.insert("article",extractionParam("<div class=\"b-serp-item__text\">","</div>",*temp));
-                qDebug()<<"match";
                 el.insert("green_line",extractionParam("<a class=\"b-serp-url__link","</span></span>",*temp));
 
                 resultsYandex.append(el);
